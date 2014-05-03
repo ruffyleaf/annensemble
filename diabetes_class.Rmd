@@ -1,0 +1,35 @@
+Classification for Diabetes using ANN
+========================================================
+```{r}
+require(nnet)
+```
+
+Read in Data
+--------------------
+```{r}
+data = read.csv("Diabetes.csv", header=FALSE)
+
+summary(data)
+nrow(data)
+```
+
+Prepare the training and test data
+```{r}
+#Training set 75% and Test set 25%
+trainsize = 0.75 * nrow(data)
+train_data = data[0:trainsize,]
+test_data = data[(trainsize+1):nrow(data),]
+```
+
+Train the neural net and then predict the results using the test data
+```{r}
+#train the neural net
+nn = nnet(V9 ~ ., data = train_data, size = 10 )
+
+results = predict(nn, test_data)
+
+#Round the results and combine it with the test_data to analyze
+result_data = cbind(test_data, results, round(results))
+
+```
+
