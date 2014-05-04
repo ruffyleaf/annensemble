@@ -11,14 +11,20 @@ data = read.csv("Diabetes.csv", header=FALSE)
 
 summary(data)
 nrow(data)
+
+#Edit by JFK
+data$V9<-as.factor(data$V9)
+#nnet automatically classifies when it encounters the target variable as factor variable.Here our target is numeric.
 ```
 
 Prepare the training and test data
 ```{r}
 #Training set 75% and Test set 25%
-trainsize = 0.75 * nrow(data)
-train_data = data[0:trainsize,]
-test_data = data[(trainsize+1):nrow(data),]
+indexes<-sample(1:nrow(data),size=0.75*nrow(data))
+#trainsize = 0.75 * nrow(data)
+#train_data = data[0:trainsize,]
+train_data<-diabetes[indexes,]
+test_data = data[-indexes,]
 ```
 
 Train the neural net and then predict the results using the test data
@@ -26,10 +32,12 @@ Train the neural net and then predict the results using the test data
 #train the neural net
 nn = nnet(V9 ~ ., data = train_data, size = 10 )
 
-results = predict(nn, test_data)
-
-#Round the results and combine it with the test_data to analyze
-result_data = cbind(test_data, results, round(results))
-
+results = predict(nn, test_data[,-9],type="class")
+#Added param type="class" to predict the class membership instead of probablities. Also removing V9(target col) from data for prediction.
+#-- No NEED TO round the prediction data now.Round the results and combine it with the test_data to analyze
+#result_data = cbind(test_data, results, round(results))
+result_data=cbind(test_data,results)
+#Generating confusion matrix
+table(result_data$V9,result_data$results)
 ```
 
