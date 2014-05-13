@@ -23,7 +23,7 @@ Prepare the training and test data
 indexes<-sample(1:nrow(data),size=0.75*nrow(data))
 #trainsize = 0.75 * nrow(data)
 #train_data = data[0:trainsize,]
-train_data<-diabetes[indexes,]
+train_data<-data[indexes,]
 test_data = data[-indexes,]
 ```
 
@@ -37,7 +37,17 @@ results = predict(nn, test_data[,-9],type="class")
 #-- No NEED TO round the prediction data now.Round the results and combine it with the test_data to analyze
 #result_data = cbind(test_data, results, round(results))
 result_data=cbind(test_data,results)
+
 #Generating confusion matrix
-table(result_data$V9,result_data$results)
+confmat = table(result_data$V9,result_data$results)
+accuracy = (confmat[1] + confmat[4]) / sum(confmat)
+sensitivity = confmat[1]/(confmat[1] + confmat[2])
+specificity = confmat[4]/(confmat[3] + confmat[4])
+
+
+confmat
+sprintf("Accuracy is %f", accuracy) 
+sprintf("Sensitivity is %f", sensitivity)
+sprintf("Specificity is %f", specificity)
 ```
 
