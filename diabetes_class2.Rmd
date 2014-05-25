@@ -1,0 +1,38 @@
+Diabetes NN with RSNSS
+========================================================
+
+Reading the data and preparing for modeling
+```{r}
+library(RSNNS)
+
+data<-read.csv("Diabetes.csv",header=F)
+
+diabetesValues <-  data[,1:8] 
+diabetesTargets <- data[,9] 
+diabetesDecTargets <-  decodeClassLabels(diabetesTargets) 
+data <-  splitForTrainingAndTest(diabetesValues, diabetesDecTargets, ratio = 0.15) 
+data <-  normTrainingAndTestSet(data)
+```
+
+Run the Model 
+```{r}
+model <-  mlp(data$inputsTrain, data$targetsTrain, size = 4, learnFuncParams = c(0.0147), maxit = 200, inputsTest = data$inputsTest, targetsTest = data$targetsTest) 
+predictions <-  predict(model, data$inputsTest)
+```
+
+Calculate MSE
+```{r}
+SingleTrainerror<- sqrt(sum((model$fitted.values - data$targetsTrain)^2))
+SingleTesterror <-  sqrt(sum((predictions - data$targetsTest)^2))
+```
+
+Plotting the curves
+```{r}
+plotIterativeError(model) 
+plotRegressionError(predictions[,2], data$targetsTest[,2], pch = 3) 
+plotROC(fitted.values(model)[,2], data$targetsTrain[,2]) 
+plotROC(predictions[,2], data$targetsTest[,2])
+
+confusionMatrix(data$targetsTrain, fitted.values(model))
+confusionMatrix(data$targetsTest, predictions)
+```
