@@ -137,6 +137,14 @@ wine <-  normTrainingAndTestSet(wine)
 model_wine <-  mlp(wine$inputsTrain, wine$targetsTrain, size = 9, learnFuncParams = c(0.0147), maxit = 200, inputsTest = wine$inputsTest, targetsTest = wine$targetsTest) 
 predictions_wine <-  predict(model_wine, wine$inputsTest)
 
+model_wine2 <-  mlp(wine$inputsTrain, wine$targetsTrain, size = 10, learnFuncParams = c(0.0147), maxit = 500, inputsTest = wine$inputsTest, targetsTest = wine$targetsTest) 
+predictions_wine2 <-  predict(model_wine2, wine$inputsTest)
+write.csv(predictions_wine, file="MLP10out.csv")
+
+model_wine3 <-  mlp(wine$inputsTrain, wine$targetsTrain, size = 15, learnFuncParams = c(0.01), maxit = 200, inputsTest = wine$inputsTest, targetsTest = wine$targetsTest) 
+predictions_wine3 <-  predict(model_wine3, wine$inputsTest)
+write.csv(predictions_wine, file="MLP15out.csv")
+
 SingleTrainerror_wine<- sqrt(sum((model_wine$fitted.values - wine$targetsTrain)^2))
 
 SingleTesterror_wine <-  sqrt(sum((predictions_wine - wine$targetsTest)^2))
@@ -149,6 +157,9 @@ plotROC(predictions_wine[,2], wine$targetsTest[,2])
                          
 confusionMatrix(wine$targetsTest, predictions_wine)
 confusionMatrix(wine$targetsTrain, fitted.values(model_wine))
+
+## Export Predicted results to CSV
+write.csv(predictions_wine, file="MLP9out.csv")
 
 #########Wine with bagging
 
