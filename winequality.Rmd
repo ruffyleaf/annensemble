@@ -25,6 +25,7 @@ windexes<-sample(1:nrow(wdata),size=0.75*nrow(wdata))
 #trainsize = 0.75 * nrow(data)
 #train_data = data[0:trainsize,]
 train_wdata = wdata[windexes,]
+
 test_wdata = wdata[-windexes,]
 ```
 
@@ -32,6 +33,7 @@ Train the neural net and then predict the results using the test data
 ```{r}
 #train the neural net
 nn = nnet(wdata$quality ~ ., data = train_wdata, size = 10 )
+nn1 = neuralnet(wdata$quality ~ wdata$fixed.acidity + wdata$volatile.acidity + wdata$citric.acid + wdata$residual.sugar + wdata$chlorides + wdata$free.sulfur.dioxide + wdata$total.sulfur.dioxide + wdata$density + wdata$pH + wdata$sulphates + wdata$alcohol, train_wdata, hidden = 10, threshold = 0.01, lifesign = 'full')
 
 results = predict(nn, test_data[,-9],type="class")
 #Added param type="class" to predict the class membership instead of probablities. Also removing V9(target col) from data for prediction.
